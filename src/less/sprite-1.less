@@ -1,0 +1,121 @@
+/*
+LESS variables are information about icon's compiled state, stored under its original file name
+
+.icon-home {
+  width: @icon-home-width;
+}
+
+The large array-like variables contain all information about a single icon
+@icon-home: x y offset_x offset_y width height total_width total_height image_path name;
+
+At the bottom of this section, we provide information about the spritesheet itself
+@spritesheet: width height image @spritesheet-sprites;
+*/
+@-5-347-1-name: '首页5_347-1';
+@-5-347-1-x: 0px;
+@-5-347-1-y: 0px;
+@-5-347-1-offset-x: 0px;
+@-5-347-1-offset-y: 0px;
+@-5-347-1-width: 226px;
+@-5-347-1-height: 55px;
+@-5-347-1-total-width: 226px;
+@-5-347-1-total-height: 185px;
+@-5-347-1-image: 'sprite-1.png';
+@-5-347-1: 0px 0px 0px 0px 226px 55px 226px 185px 'sprite-1.png' '首页5_347-1';
+@-5-402-1-name: '首页5_402-1';
+@-5-402-1-x: 0px;
+@-5-402-1-y: 65px;
+@-5-402-1-offset-x: 0px;
+@-5-402-1-offset-y: -65px;
+@-5-402-1-width: 226px;
+@-5-402-1-height: 55px;
+@-5-402-1-total-width: 226px;
+@-5-402-1-total-height: 185px;
+@-5-402-1-image: 'sprite-1.png';
+@-5-402-1: 0px 65px 0px -65px 226px 55px 226px 185px 'sprite-1.png' '首页5_402-1';
+@-5-69-1-name: '首页5_69-1';
+@-5-69-1-x: 0px;
+@-5-69-1-y: 130px;
+@-5-69-1-offset-x: 0px;
+@-5-69-1-offset-y: -130px;
+@-5-69-1-width: 226px;
+@-5-69-1-height: 55px;
+@-5-69-1-total-width: 226px;
+@-5-69-1-total-height: 185px;
+@-5-69-1-image: 'sprite-1.png';
+@-5-69-1: 0px 130px 0px -130px 226px 55px 226px 185px 'sprite-1.png' '首页5_69-1';
+@spritesheet-width: 226px;
+@spritesheet-height: 185px;
+@spritesheet-image: 'sprite-1.png';
+@spritesheet-sprites: @-5-347-1 @-5-402-1 @-5-69-1;
+@spritesheet: 226px 185px 'sprite-1.png' @spritesheet-sprites;
+
+/*
+The provided classes are intended to be used with the array-like variables
+
+.icon-home {
+  .sprite-width(@icon-home);
+}
+.icon-email {
+  .sprite(@icon-email);
+}
+
+Example usage in HTML:
+
+`display: block` sprite:
+<div class="icon-home"></div>
+
+To change `display` (e.g. `display: inline-block;`), we suggest using a common CSS class:
+
+// CSS
+.icon {
+  display: inline-block;
+}
+
+// HTML
+<i class="icon icon-home"></i>
+*/
+.sprite-width(@sprite) {
+  width: extract(@sprite, 5);
+}
+
+.sprite-height(@sprite) {
+  height: extract(@sprite, 6);
+}
+
+.sprite-position(@sprite) {
+  @sprite-offset-x: extract(@sprite, 3);
+  @sprite-offset-y: extract(@sprite, 4);
+  background-position: @sprite-offset-x @sprite-offset-y;
+}
+
+.sprite-image(@sprite) {
+  @sprite-image: extract(@sprite, 9);
+  @sprite-image-bare: ~`"@{sprite-image}".slice(1, -1)`;
+  background-image: url(@sprite-image-bare);
+}
+
+.sprite(@sprite) {
+  .sprite-image(@sprite);
+  .sprite-position(@sprite);
+  .sprite-width(@sprite);
+  .sprite-height(@sprite);
+}
+
+/*
+The `.sprites` mixin generates identical output to the CSS template
+  but can be overridden inside of LESS
+
+This must be run when you have at least 2 sprites.
+  If run with a single sprite, then there will be reference errors.
+
+.sprites(@spritesheet-sprites);
+*/
+.sprites(@sprites, @i: 1) when (@i <= length(@sprites)) {
+  @sprite: extract(@sprites, @i);
+  @sprite-name: e(extract(@sprite, 10));
+  .@{sprite-name} {
+    .sprite(@sprite);
+  }
+  .sprites(@sprites, @i + 1);
+}
